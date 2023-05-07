@@ -4,16 +4,25 @@ import { Link } from "react-router-dom";
 
   function Home() {
     const [data, setData] = useState([]);
+    const [loading, setLoading] = useState(false);
     const getData=async()=>{
+      setLoading(true);
     const res=  await axios.get("https://api.tvmaze.com/search/shows?q=all");
     const resData=await res.data;
       setData(resData);
+      setLoading(false);
     }
     useEffect(() => {
         getData();
     }, [])
     return (
         <div className="container-fluid  d-flex main">
+          {loading?(
+           <div className="spinner-border text-primary" role="status">
+           <span className="visually-hidden">Loading...</span>
+         </div>
+          ):(
+            <>
          {data.map((item) => (
         <div className="card"  key={item.show.id}>
         <img src={item.show.image?.medium} className="card-img-top" alt={item.show.name}/>
@@ -24,6 +33,8 @@ import { Link } from "react-router-dom";
         </div>
       </div>
         ))}
+        </>
+          )}
          <style jsx>{`
             .main{
                 flex-wrap: wrap;
